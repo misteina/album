@@ -7,9 +7,7 @@ function App() {
             <header>
                 <span>Photos</span>
                 <div>
-                    <button>&#12296;</button>
-                    Page <input type="number" /> of 100
-                    <button>&#12297;</button>
+                    <button>&#12296;</button>Page 1<button>&#12297;</button>
                 </div>
                 <div>
                     <div>Upload</div>|<div>Delete</div>
