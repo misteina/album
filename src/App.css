@@ -1,20 +1,58 @@
 header {
+    position: relative;
     height: 50px;
     line-height: 50px;
     padding: 0 20px;
     box-sizing: border-box;
 }
-header span {
+header > span {
     font-size: 20px;
     font-weight: bold;
 }
-header > div {
-    float: right;
+header > div:nth-child(2) {
+    display: inline-block;
+    position: absolute;
+    font-size: 14px;
+    height: 50px;
+    left: 40%;
+    top: 0;
+}
+header > div:nth-child(2) button {
+    width: 50px;
+    cursor: pointer;
+    background-color: white;
+    border: none;
+}
+header > div:nth-child(2) input {
+    width: 30px;
+    border: 1px solid #c3bfbf;
+}
+header > div:nth-child(3) {
+    position: absolute;
+    right: 20px;
+    top: 0;
     font-size: 13px;
 }
-header div div {
+header > div:nth-child(3) div {
     display: inline-block;
-    margin-left: 10px;
+    cursor: pointer;
+    text-align: right;
+}
+header > div:nth-child(3) div:first-child {
+    width: 70px;
+    margin-right: 20px;
+    background-size: 20px;
+    background-position: left;
+    background-repeat: no-repeat;
+    background-image: url(icons/upload.svg);
+}
+header > div:nth-child(3) div:nth-child(2) {
+    width: 63px;
+    margin-left: 20px;
+    background-size: 16px;
+    background-position: left;
+    background-repeat: no-repeat;
+    background-image: url(icons/delete.svg);
 }
 main {
     display: flex;
