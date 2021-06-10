@@ -14,18 +14,72 @@ function App() {
                 </div>
             </header>
             <main>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Album
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Album
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Album
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Album
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Album
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Albumm
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Album
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div>
+                        <b>Name</b><br />Album
+                    </div>
+                </div>
             </main>
-            <footer>
-                <div></div>
-            </footer>
+            <div id="upload">
+                <div>
+                    <div>Upload photos</div>
+                    <div>Drag and drop files here or click to select files.</div>
+                    <div>No files selected</div>
+                    <div>
+                        <select>
+                            <option>Travel</option>
+                            <option>Personal</option>
+                            <option>Food</option>
+                            <option>Nature</option>
+                            <option>Other</option>
+                        </select>
+                        <button>Upload</button>
+                    </div>
+                </div>
+            </div>
         </React.Fragment>
     );
 }
