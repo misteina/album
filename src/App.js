@@ -19,7 +19,7 @@ function App() {
     React.useEffect(() => {
         fetch('http://localhost:8888/photos/list', {
             method: 'POST',
-            body: JSON.stringify({ skip: state.skip, limit: 10 }),
+            body: JSON.stringify({ skip: state.skip, limit: 20 }),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -157,17 +157,17 @@ function App() {
             setState(state => ({
                 ...state,
                 page: state.page - 1,
-                skip: state.skip < 10 ? 0 : state.skip - 10
+                skip: state.skip < 20 ? 0 : state.skip - 20
             }));
         }
     }
 
     const nextPage = () => {
-        if (state.photos.length === 10){
+        if (state.photos.length === 20){
             setState(state => ({
                 ...state,
                 page: state.page + 1,
-                skip: state.skip + 10
+                skip: state.skip + 20
             }));
         }
     }
