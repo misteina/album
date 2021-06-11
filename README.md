@@ -1,5 +1,3 @@
-# Quick Guide
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 Download the repository and in the project directory, you can run:
