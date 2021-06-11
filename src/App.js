@@ -1,4 +1,5 @@
 import React from 'react';
+import UploadDialog from './components/dialog';
 import './App.css';
 
 function App() {
@@ -10,7 +11,9 @@ function App() {
         album: 'select',
         formData: null,
         photos: [],
-        skip: 0
+        skip: 0,
+        deletePhotos: [],
+        page: 1
     });
 
     React.useEffect(() => {
@@ -107,6 +110,9 @@ function App() {
                 }).then(function (data) {
                     const status = data.message === 'OK' ? 'File(s) uploaded' : 
                         'File(s) uploading failed';
+                    if (data.message === 'OK'){
+                        alert(status);
+                    }
                     setState(state => ({
                         ...state,
                         uploadStatus: status,
@@ -146,15 +152,120 @@ function App() {
         }
     }
 
+    const previousPage = () => {
+        if (state.skip > 0){
+            setState(state => ({
+                ...state,
+                page: state.page - 1,
+                skip: state.skip < 10 ? 0 : state.skip - 10
+            }));
+        }
+    }
+
+    const nextPage = () => {
+        if (state.photos.length === 10){
+            setState(state => ({
+                ...state,
+                page: state.page + 1,
+                skip: state.skip + 10
+            }));
+        }
+    }
+
+    const checkForDelete = (e) => {
+        const name = e.target.parentNode.querySelectorAll('b')[0].innerText;
+        const album = e.target.parentNode.querySelectorAll('span')[0].innerText;
+        let findAlbum = false;
+        const deletePhotos = [...state.deletePhotos];
+        for (let i = 0; i < deletePhotos.length; i++){
+            if (e.target.checked) {
+                if (deletePhotos[i].album === album) {
+                    findAlbum = true;
+                    deletePhotos[i].documents = deletePhotos[i].documents.split(',');
+                    if (!deletePhotos[i].documents.includes(name)) {
+                        deletePhotos[i].documents.push(name);
+                        deletePhotos[i].documents = deletePhotos[i].documents.join(',');
+                    }
+                    break;
+                }
+            } else {
+                if (deletePhotos[i].album === album){
+                    deletePhotos[i].documents = deletePhotos[i].documents.split(',');
+                    let index = deletePhotos[i].documents.indexOf(name);
+                    if (index >= 0){
+                        deletePhotos[i].documents.splice(index, 1);
+                        deletePhotos[i].documents = deletePhotos[i].documents.join(',');
+                        if (deletePhotos[i].documents.length === 0) {
+                            deletePhotos.splice(i, 1);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        if (e.target.checked && !findAlbum) {
+            deletePhotos.push({ album: album, documents: name });
+        }
+        setState(state => ({
+            ...state,
+            deletePhotos: deletePhotos
+        }));
+        console.log(deletePhotos)
+    }
+
+    const deleteImages = () => {
+        if (state.deletePhotos.length > 0){
+            fetch('http://localhost:8888/photos', {
+                method: 'DELETE',
+                body: JSON.stringify(state.deletePhotos),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }).then(
+                res => res.json()
+            ).then(
+                (data) => {
+                    if (data.message === 'OK') {
+                        const photos = [...state.photos];
+                        const deletePhotos = [...state.deletePhotos];
+                        for (let i = 0;i < photos.length;i++){
+                            for (let j = 0;j < deletePhotos.length;j++){
+                                if (
+                                    photos[i].album === deletePhotos[j].album && 
+                                    deletePhotos[j].documents.includes(photos[i].name.split('/').pop()) 
+                                ){
+                                    photos.splice(i, 1);
+                                }
+                            }
+                        }
+                        setState(state => ({
+                            ...state,
+                            deletePhotos: [],
+                            photos: photos
+                        }));
+                    }
+                },
+                (error) => {
+                    console.error(error)
+                }
+            );
+        } else {
+            alert(`You have not selected any photo(s) to delete. Please move the mouse pointer around the top left area of the photo boxes to select photo(s) to delete`);
+        }
+    }
+
     return (
         <React.Fragment>
             <header>
                 <span>Photos</span>
                 <div>
-                    <button>&#12296;</button>Page 1<button>&#12297;</button>
+                    <button onClick={previousPage}>&#12296;</button>
+                    Page {state.page}
+                    <button onClick={nextPage}>&#12297;</button>
                 </div>
                 <div>
-                    <div onClick={openUploadDialog}>Upload</div>|<div>Delete</div>
+                    <div onClick={openUploadDialog}>Upload</div>|
+                    <div onClick={deleteImages}>Delete</div>
                 </div>
             </header>
             <main>
@@ -163,8 +274,9 @@ function App() {
                         <div key={photo.id}>
                             <div><img src={photo.raw} alt={photo.name} /></div>
                             <div>
-                                <b>{photo.name.split('/').pop()}</b><br />{photo.album}
+                                <b>{photo.name.split('/').pop()}</b><br /><span>{photo.album}</span>
                             </div>
+                            <input type="checkbox" onChange={checkForDelete} />
                         </div>
                     )
                 } 
@@ -182,40 +294,6 @@ function App() {
             />
         </React.Fragment>
     );
-}
-
-function UploadDialog(props){
-    if (props.display){
-        return (
-            <div id="upload" onClick={props.dialogClick}>
-                <div>
-                    <div>Upload photos</div>
-                    <div onDrop={props.onDrop} onDragOver={props.onDragOver}>
-                        Drag and drop files here or click to select files.
-                        <input
-                            onChange={props.selectFiles}
-                            type="file"
-                            accept="image/png, image/jpeg"
-                            multiple
-                        />
-                    </div>
-                    <div>{props.uploadStatus}</div>
-                    <div>
-                        <select value={props.album} onChange={props.onChange}>
-                            <option value="select">Choose album</option>
-                            <option value="travel">Travel</option>
-                            <option value="personal">Personal</option>
-                            <option value="food">Food</option>
-                            <option value="nature">Nature</option>
-                            <option value="other">Other</option>
-                        </select>
-                        <button onClick={props.upload}>Upload</button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-    return null;
 }
 
 export default App;
